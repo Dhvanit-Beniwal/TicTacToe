@@ -91,6 +91,7 @@ export default function nextMoveIndices(state){
                 isAiMoveValid = false;
                 isAiMoveWinning = false;
                 possibleMoves.draw = true;
+                possibleMoves.moves.push(aiMove);
             }
             if(isAiMoveValid){
                 if(isAiMoveWinning){
@@ -138,6 +139,4 @@ function emptySpots(state){
 // console.log(input.slice(0,3).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
 // console.log(input.slice(3,6).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
 // console.log(input.slice(6,9).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
-
-
 // console.log(nextMoveIndices(input))
