@@ -1,208 +1,143 @@
-// "AI"s tic-tac-toe logic here
-export default function NextMoveId(movesList){
-    let whoStarted = movesList[0];
-    let result_id = 0;
-    let finished = undefined;
-    if(!movesList[1]){
-        result_id = 1;
-    } else
-    if(whoStarted === 'ai'){
-        if(movesList[2] === 2){
-            if(!movesList[3]){result_id = 7;} else
-            if(movesList[4] !== 4){ result_id = 4; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 5;} else
-                if(movesList[6] !== 3){result_id = 3; finished = 'I won';} else
-                {result_id = 9; finished = 'I won';}
+function checkForThrees(triplet, whoseTurn){
+    for(let i=0; i<3; i++){
+        if(triplet[i] === whoseTurn){return}
+        else{triplet[i] = (triplet[i] !== 'none');}
+    }
+    let [a,b,c] = triplet;
+    if(!a&&b&&c){return 0}
+    if(a&&!b&&c){return 1}
+    if(a&&b&&!c){return 2}
+}
+
+// state is ['user','none','ai'...] (9 elements)
+// returns the index of the first necessary move it finds
+function necessaryMoveIndex(state, whoseTurn){
+    let tripletsToCheck = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6],
+    ] // triplets of indices not states
+    
+    for(let triplet of tripletsToCheck){
+        let i = checkForThrees(triplet.map(index=>state[index]), whoseTurn);
+        if(i !== undefined){return triplet[i]} // i can be 0,1,2 or undefined
+    }
+    return
+}
+
+export default function nextMoveIndices(state){
+    let winningMove = necessaryMoveIndex(state, 'user');
+    if(winningMove !== undefined){return {
+        moves: [winningMove],
+        winningMove: true,
+        finished: "won"
+    }}
+    
+    let necessaryMove = necessaryMoveIndex(state, 'ai');
+    if(necessaryMove !== undefined){
+        let newState = placeMarker(state, necessaryMove, 'ai');
+        let lost = (necessaryMoveIndex(newState, 'ai') !== undefined);
+        if(lost){return {
+            moves:  [],
+            winningMove: false,
+        }}
+    }
+
+    if(emptySpots(state).length === 0){return {
+        moves: [],
+        draw: true,
+        finished: "draw"
+    }}
+
+    let possibleMoves = {
+        moves: [],
+        winningMove: false,
+    }
+
+    for(let aiMove of emptySpots(state)){
+        let newState = placeMarker(state, aiMove, 'ai');
+        if(necessaryMove && aiMove !== necessaryMove){continue;}
+        let i = necessaryMoveIndex(newState, 'user');
+
+        if(i !== undefined){
+            let tmpState = placeMarker(newState, i, 'user');
+            let next = nextMoveIndices(tmpState);
+            if(next.winningMove){
+                possibleMoves.moves = [aiMove];
+                possibleMoves.winningMove = true;
+                break;
+            } else if(next.moves.length > 0) {
+                possibleMoves.moves.push(aiMove);
+            } else if(next.draw){
+                possibleMoves.moves.push(aiMove);
             }
-        } else
-        if(movesList[2] === 3){
-            if(!movesList[3]){result_id = 9;} else
-            if(movesList[4] !== 5){ result_id = 5; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 7;} else
-                if(movesList[6] !== 4){result_id = 4; finished = 'I won';} else
-                {result_id = 8; finished = 'I won';}
-            }
-        } else
-        if(movesList[2] === 4){
-            if(!movesList[3]){result_id = 3;} else
-            if(movesList[4] !== 2){ result_id = 2; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 5;} else
-                if(movesList[6] !== 7){result_id = 7; finished = 'I won';} else
-                {result_id = 9; finished = 'I won';}
-            }
-        } else
-        if(movesList[2] === 5){
-            if(!movesList[3]){result_id = 9;} else
-            if(movesList[4] === 3){
-                if(!movesList[5]){result_id = 7;} else
-                if(movesList[6] !== 4){result_id = 4; finished = 'I won';} else
-                {result_id = 8; finished = 'I won';}
-            } else
-            if(movesList[4] === 7){
-                if(!movesList[5]){result_id = 3;} else
-                if(movesList[6] !== 2){result_id = 2; finished = 'I won';} else
-                {result_id = 6; finished = 'I won';}
-            } else
-            if(movesList[4] === 2){
-                if(!movesList[5]){result_id = 8;} else
-                if(movesList[6] !== 7){result_id = 7; finished = 'I won';} else
-                if(!movesList[7]){result_id = 3;} else
-                if(movesList[8] !== 6){result_id = 6; finished = 'I won'} else
-                {result_id = 4; finished = 'draw'}
-            } else
-            if(movesList[4] === 4){
-                if(!movesList[5]){result_id = 6;} else
-                if(movesList[6] !== 3){result_id = 3; finished = 'I won';} else
-                if(!movesList[7]){result_id = 7;} else
-                if(movesList[8] !== 8){result_id = 8; finished = 'I won'} else
-                {result_id = 2; finished = 'draw'}
-            } else
-            if(movesList[4] === 6){
-                if(!movesList[5]){result_id = 4;} else
-                if(movesList[6] !== 7){result_id = 7; finished = 'I won';} else
-                if(!movesList[7]){result_id = 3;} else
-                if(movesList[8] !== 2){result_id = 2; finished = 'I won'} else
-                {result_id = 8; finished = 'draw'}
-            }else
-            if(movesList[4] === 8){
-                if(!movesList[5]){result_id = 2;} else
-                if(movesList[6] !== 3){result_id = 3; finished = 'I won';} else
-                if(!movesList[7]){result_id = 7;} else
-                if(movesList[8] !== 4){result_id = 4; finished = 'I won'} else
-                {result_id = 6; finished = 'draw'}
-            }
-        } else
-        if(movesList[2] === 6){
-            if(!movesList[3]){result_id = 7;} else
-            if(movesList[4] !== 4){ result_id = 4; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 5;} else
-                if(movesList[6] !== 3){result_id = 3; finished = 'I won';} else
-                {result_id = 9; finished = 'I won';}
-            }
-        } else
-        if(movesList[2] === 7){
-            if(!movesList[3]){result_id = 9;} else
-            if(movesList[4] !== 5){ result_id = 5; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 3;} else
-                if(movesList[6] !== 2){result_id = 2; finished = 'I won';} else
-                {result_id = 6; finished = 'I won';}
-            }
-        } else
-        if(movesList[2] === 8){
-            if(!movesList[3]){result_id = 3;} else
-            if(movesList[4] !== 2){ result_id = 2; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 5;} else
-                if(movesList[6] !== 7){result_id = 7; finished = 'I won';} else
-                {result_id = 9; finished = 'I won';}
-            }
-        } else
-        if(movesList[2] === 9){
-            if(!movesList[3]){result_id = 3;} else
-            if(movesList[4] !== 2){ result_id = 2; finished = 'I won';} else
-            {
-                if(!movesList[5]){ result_id = 7;} else
-                if(movesList[6] !== 4){result_id = 4; finished = 'I won';} else
-                {result_id = 5; finished = 'I won';}
-            }
-        }
-    } else
-    if(whoStarted === 'user'){
-        if(movesList[1] === 1){
-            if(!movesList[2]){result_id = 5;} else
-            if(movesList[3] === 9){
-                if(!movesList[4]){result_id = 2;} else
-                if(movesList[5] !== 8){result_id = 8; finished = 'I won';} else
-                if(!movesList[6]){result_id = 7;} else
-                if(movesList[7] !== 3){result_id = 3; finished = 'I won';} else
-                if(!movesList[8]){result_id = 6; finished = 'draw'}
-            } else
-            if(movesList[3] === 2){
-                if(!movesList[4]){result_id = 3;} else
-                if(movesList[5] !== 7){result_id = 7; finished = 'I won';} else
-                if(!movesList[6]){result_id = 4;} else
-                if(movesList[7] !== 6){result_id = 6; finished = 'I won';} else
-                if(!movesList[8]){result_id = 8; finished = 'draw';}
-            } else
-            if(movesList[3] === 4){
-                if(!movesList[4]){result_id = 7;} else
-                if(movesList[5] !== 3){result_id = 3; finished = 'I won';} else
-                if(!movesList[6]){result_id = 2;} else
-                if(movesList[7] !== 8){result_id = 8; finished = 'I won';} else
-                if(!movesList[8]){result_id = 6; finished = 'draw';}
-            } else
-            if(movesList[3] === 3){
-                if(!movesList[4]){result_id = 2;} else
-                if(movesList[5] !== 8){result_id = 8; finished = 'I won';} else
-                if(!movesList[6]){result_id = 4;} else
-                if(movesList[7] !== 6){result_id = 6; finished = 'I won';} else
-                if(!movesList[8]){result_id = 9; finished = 'draw';}
-            } else
-            if(movesList[3] === 7){
-                if(!movesList[4]){result_id = 4;} else
-                if(movesList[5] !== 6){result_id = 6; finished = 'I won';} else
-                if(!movesList[6]){result_id = 2;} else
-                if(movesList[7] !== 8){result_id = 8; finished = 'I won';} else
-                if(!movesList[8]){result_id = 9; finished = 'draw';}
-            } else
-            if(movesList[3] === 6){
-                if(!movesList[4]){result_id = 9;} else
-                if(movesList[5] === 2){
-                    if(!movesList[6]){result_id = 3;} else
-                    if(movesList[7] !== 7){result_id = 7; finished = 'I won';} else
-                    if(!movesList[8]){result_id = 4; finished = 'draw';}
-                } else
-                if(movesList[5] === 3){
-                    if(!movesList[6]){result_id = 2;} else
-                    if(movesList[7] !== 8){result_id = 8; finished = 'I won';} else
-                    if(!movesList[8]){result_id = 4; finished = 'draw';}
-                } else
-                if(movesList[5] === 7){} else
-                if(movesList[5] === 8){} else
-                if(movesList[5] === 4){} else
+        } else {
+            let isAiMoveValid = true;
+            let isAiMoveWinning = true;
+            for(let userMove of emptySpots(newState)){
+                let tmpState = placeMarker(newState, userMove, 'user');
                 
-                if(movesList[5] !== 6){result_id = 6; finished = 'I won';} else
-                if(!movesList[6]){result_id = 2;} else
-                if(movesList[7] !== 8){result_id = 8; finished = 'I won';} else
-                if(!movesList[8]){result_id = 9; finished = 'draw';}
-            } else
-            if(movesList[3] === 8){
-                
+                let next = nextMoveIndices(tmpState);
+
+                if(next.moves.length === 0 && !next.draw){isAiMoveValid = false; break;}
+                if(!next.winningMove){isAiMoveWinning = false;}
             }
-        } else
-        if(movesList[1] === 2){
-            
-        } else
-        if(movesList[1] === 3){
-            
-        } else
-        if(movesList[1] === 4){
-            
-        } else
-        if(movesList[1] === 5){
-            
-        } else
-        if(movesList[1] === 6){
-            
-        } else
-        if(movesList[1] === 7){
-            
-        } else
-        if(movesList[1] === 8){
-            
-        } else
-        if(movesList[1] === 9){
-            
+            if(emptySpots(newState).length === 0){
+                isAiMoveValid = false;
+                isAiMoveWinning = false;
+                possibleMoves.draw = true;
+            }
+            if(isAiMoveValid){
+                if(isAiMoveWinning){
+                    possibleMoves.moves = [aiMove];
+                    possibleMoves.winningMove = true;
+                    break;
+                }
+                possibleMoves.moves.push(aiMove);
+            }
         }
     }
 
-    return {
-        id: result_id,
-        finished: finished,
-    }
+    return possibleMoves
 }
+
+
+function placeMarker(state,index,marker){
+    return state.map((element,i)=>(i === index ? marker : element))
+}
+function emptySpots(state){
+    let emptySpots = [];
+    for(let i=0; i<9; i++){if(state[i] === 'none'){emptySpots.push(i)}}
+    return emptySpots
+}
+
+// util function for comparing two lists (since === operator doesn't work for js arrays the way we want)
+// function isEqual(a,b){
+//     if (a.length !== b.length){return false}
+//     for(let i=0; i<a.length; i++){
+//         if(a[i] !== b[i]){return false}
+//     }
+//     return true
+// }
+
+// const input = [
+//     'user','none','none',
+//     'none','none','none',
+//     'none','none','none'
+// ]
+// // [
+// //     'none','none','none',
+// //     'none','none','none',
+// //     'none','none','none'
+// // ]
+// console.log(input.slice(0,3).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
+// console.log(input.slice(3,6).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
+// console.log(input.slice(6,9).map(a=>(a==='user'?'X':(a==='ai'? 'O' : ' '))));
+
+
+// console.log(nextMoveIndices(input))

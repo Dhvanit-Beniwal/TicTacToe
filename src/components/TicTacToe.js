@@ -1,6 +1,6 @@
 import './TicTacToe.css'
 import React from 'react'
-import NextMoveId from './Logic'
+import nextMoveIndices from './Logic'
 
 function Lines(){
     return(
@@ -31,18 +31,8 @@ function O(){
 }
 
 function Boxes(props){
-    let state= ['none','none','none','none','none','none','none','none','none'];
-    let current = props.movesList[0]    // 'user' or 'ai' who started?
-    for(let i=1; i<props.movesList.length; i++){
-        let id = props.movesList[i];
-        state[id-1] = current;
-        current = (current === 'user' ? 'ai' : 'user');
-    }
-
-    // var 'state' is a array of {'none'/'user'/'ai'} of length 9
-
-    const boxElements = state.map((state,index) => (
-        <div className="box" key={index+1} id={index+1} onClick={()=>props.handleClick(index+1)}>{{
+    const boxElements = props.boardState.map((state,index) => (
+        <div className="box" key={index} id={index} onClick={()=>{props.handleClick(index)}}>{{
             none: '',
             x: <X />,
             o: <O />,
@@ -68,20 +58,22 @@ function Buttons(props){
     )
 }
 
+const initialBoardState = ['none','none','none','none','none','none','none','none','none'];
+
 export default function TicTacToe(props){
     
-    const [movesList, setMovesList] = React.useState(['user']); //example: ['user',1,4,8]
+    const [boardState, setBoardState] = React.useState(initialBoardState);
     const [userMarker, setUserMarker] = React.useState('x')
     const [isUserFirst, setIsUserFirst] = React.useState(true)
     const [isUserTurn, setIsUserTurn] = React.useState(true)
     const [gameStatus, setGameStatus] = React.useState('none')
 
     function resetBoard(){
-        setMovesList(['user']);
+        setBoardState(initialBoardState);
         setGameStatus('none');
     }
     function changeMarker(){
-        if(movesList.length > 2){return}
+        if(boardState.filter(x => x === 'none').length < 8){return}
         setUserMarker(prev => (prev === 'x' ? 'o' : 'x'));
     }
     function switchStartingPlayer(){
@@ -89,12 +81,12 @@ export default function TicTacToe(props){
     }
     // marker is 'user' or 'ai'
     function placeMarker(marker, id){
-        setMovesList(prev => ([...prev, id]));
+        setBoardState(prev=>prev.map((elem,index)=>(index === id ? marker : elem)))
     }
     // executing the user's move
     function handleClick(id){
         if(!isUserTurn){return}
-        if(movesList.find(e => e===id)){return}
+        if(boardState[id] !== 'none'){return}
         if(gameStatus !== 'none'){return}
         
         placeMarker('user', id);
@@ -106,12 +98,21 @@ export default function TicTacToe(props){
     React.useEffect(()=>{
         resetBoard();
         setIsUserTurn(isUserFirst);
-        setMovesList(isUserFirst ? ['user'] : ['ai'])
+        setBoardState(initialBoardState);
     }, [isUserFirst])
 
     const nextMove = React.useCallback(
-        () => NextMoveId(movesList),
-        [movesList]
+        () => {
+            let tmp = nextMoveIndices(boardState);
+            let id;
+            if(tmp.moves.length === 1){id = tmp.moves[0];}
+            else {id = tmp.moves[Math.floor(Math.random() * tmp.moves.length)]}
+            return {
+                id: id,
+                finished: tmp.finished || 'none'
+            }
+        },
+        [boardState]
     )
 
     // executing the "AI"s move
@@ -135,7 +136,7 @@ export default function TicTacToe(props){
                 </div>
                 <div className="board">
                     <Lines />
-                    <Boxes movesList={movesList} userMarker={userMarker} handleClick={handleClick} />
+                    <Boxes boardState={boardState} userMarker={userMarker} handleClick={handleClick} />
                 </div>
                 <Buttons 
                     reset={() => {resetBoard(); setIsUserFirst(true); setIsUserTurn(true);}} 
