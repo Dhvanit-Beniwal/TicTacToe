@@ -93,6 +93,7 @@ export default function nextMoveIndices(state){
                 isAiMoveValid = false;
                 isAiMoveWinning = false;
                 possibleMoves.draw = true;
+                possibleMoves.finished = "draw";
                 possibleMoves.moves.push(aiMove);
             }
             if(isAiMoveValid){
@@ -105,7 +106,7 @@ export default function nextMoveIndices(state){
             }
         }
     }
-
+    
     return possibleMoves
 }
 

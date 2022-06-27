@@ -1,0 +1,72 @@
+.forward-slash{
+    border-radius: 3px;
+    background-color: #912222;
+    border: solid 2px #e86033;
+    
+    width: 5%;
+    height: 100%;
+    transform: rotate(55deg);
+}
+.backward-slash{
+    border-radius: 3px;
+    background-color: rgb(145, 34, 34);
+    border: solid 2px rgb(232, 96, 51);
+    
+    width: 5%;
+    height: 100%;
+    transform: rotate(-30deg);
+}
+
+.ring-outer-border{
+    border: solid 2px rgb(56, 211, 131);
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+    position: absolute;
+}
+.ring-inner-border{
+    border: solid 2px #38d383;
+    border-radius: 50%;
+    width: 70.5%;
+    height: 70.5%;
+    position: absolute;
+}
+.ring{
+    border: solid 4px #0da32d;
+    border-radius: 50%;
+    width: 74.5%;
+    height: 74.5%;
+    position: absolute;
+}
+
+.line{
+    border-radius: 3px;
+    background-color: rgb(34, 78, 145);
+    border: solid 2px rgb(28, 48, 46);
+    position: absolute;
+}
+
+.left-vert{
+    width: 2%;
+    height: 90%;
+    left: 31.5%;
+    top: 5%;
+}
+.right-vert{
+    width: 2%;
+    height: 90%;
+    left: 64.5%;
+    top: 5%;
+}
+.top-horz{
+    height: 2%;
+    width: 90%;
+    top: 31.5%;
+    left: 5%;
+}
+.bottom-horz{
+    height: 2%;
+    width: 90%;
+    top: 64.5%;
+    left: 5%;
+}
