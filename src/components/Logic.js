@@ -60,8 +60,10 @@ export default function nextMoveIndices(state){
     }
 
     for(let aiMove of emptySpots(state)){
+        if(necessaryMove!==undefined && aiMove !== necessaryMove){continue;}
+        
         let newState = placeMarker(state, aiMove, 'ai');
-        if(necessaryMove && aiMove !== necessaryMove){continue;}
+        
         let i = necessaryMoveIndex(newState, 'user');
 
         if(i !== undefined){
@@ -127,9 +129,9 @@ function emptySpots(state){
 // }
 
 // const input = [
-//     'user','none','none',
 //     'none','none','none',
-//     'none','none','none'
+//     'none','none','none',
+//     'user','none','none'
 // ]
 // // [
 // //     'none','none','none',
