@@ -70,7 +70,7 @@ export default function TicTacToe(props){
     return (
         <>
             <div className='main-container'>
-                <div className='logo-container'>
+                <div className='logo-container flex-center'>
                     <div className='forward-slash'></div>
                     <O />
                     <div className='backward-slash'></div>
@@ -88,11 +88,13 @@ export default function TicTacToe(props){
                     changeMarker={changeMarker} 
                     userMarker={userMarker}
                 />
-                <div className='game-status'>{{
-                    "none":"",
-                    "won":"lol, bad day?",
-                    "draw":"Unsurprisingly, a Draw",
-                }[gameStatus]}</div>
+                <div className='flex-center panel'>
+                    <div className='game-status'>{{
+                        "none":"",
+                        "won":"lol, bad day?",
+                        "draw":"Unsurprisingly, a Draw",
+                    }[gameStatus]}</div>
+                </div>
             </div>
         </>
     )
@@ -146,42 +148,36 @@ function Boxes(props){
 
 function ButtonsTop(props){
     return(
-        <div className="buttons">
-            <div className="choices">
-                <div style={{color:"white", margin:"5px", display:'flex', alignItems:'center', justifyContent:'center'}}>
-                    Want first move?
-                </div>
-                <div 
-                    className={"choice" + (props.isUserFirst? " mark-selected" :"")} 
-                    onClick={()=>{if(!props.isUserFirst){props.switchStartingPlayer()}}}
-                >Yes</div>
-                <div 
-                    className={"choice" + (!props.isUserFirst? " mark-selected" :"")} 
-                    onClick={()=>{if(props.isUserFirst){props.switchStartingPlayer()}}}
-
-                >No</div>
+        <div className="flex-center panel">
+            <div className="flex-center" style={{color:"white", margin:"5px"}}>
+                Want first move?
             </div>
+            <div 
+                className={"choice flex-center" + (props.isUserFirst? " mark-selected" :"")} 
+                onClick={()=>{if(!props.isUserFirst){props.switchStartingPlayer()}}}
+            >Yes</div>
+            <div 
+                className={"choice flex-center" + (!props.isUserFirst? " mark-selected" :"")} 
+                onClick={()=>{if(props.isUserFirst){props.switchStartingPlayer()}}}
+
+            >No</div>
         </div>
     )
 }
 function ButtonsBottom(props){
     return(
-        <div className="buttons">
-            <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
-                <div className="choices">
-                    <div 
-                        className={"choice" + (props.userMarker === 'x'? " mark-selected" :"")} 
-                        onClick={()=>{if(props.userMarker === 'o'){props.changeMarker()}}}
-                        style={{borderColor:"#ff7c3a", color:"#ff7c3a"}}
-                    >X</div>
-                    <div className='button' onClick={props.reset}>Restart Game</div>
-                    <div 
-                        className={"choice" + (props.userMarker === 'o'? " mark-selected" :"")} 
-                        onClick={()=>{if(props.userMarker === 'x'){props.changeMarker()}}}
-                        style={{borderColor:"#38d383", color:"#38d383"}}
-                    >O</div>
-                </div>
-            </div>
+        <div className="flex-center panel">
+            <div 
+                className={"choice flex-center" + (props.userMarker === 'x'? " mark-selected" :"")} 
+                onClick={()=>{if(props.userMarker === 'o'){props.changeMarker()}}}
+                style={{borderColor:"#ff7c3a", color:"#ff7c3a"}}
+            >X</div>
+            <div className='button flex-center' onClick={props.reset}>Restart Game</div>
+            <div 
+                className={"choice flex-center" + (props.userMarker === 'o'? " mark-selected" :"")} 
+                onClick={()=>{if(props.userMarker === 'x'){props.changeMarker()}}}
+                style={{borderColor:"#38d383", color:"#38d383"}}
+            >O</div>
         </div>
     )
 }

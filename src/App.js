@@ -4,7 +4,9 @@ import TicTacToe from "./components/TicTacToe/main"
 function App() {
   return (
     <>
-      <TicTacToe />
+      <div style={{height:"100vh"}} className="flex-center">
+        <TicTacToe />
+      </div>
     </>
   );
 }
