@@ -1,3 +1,5 @@
+A basic playable TicTacToe Game against the computer. All relevant code is in the directory src/components/TicTacToe/, the rest of the project is a basic setup to view and play the game. Run `npm install` and then `npm start` in the root directory to play the game on [http://localhost:3000](http://localhost:3000)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
